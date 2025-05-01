@@ -15,7 +15,7 @@ import {
   Title,
   Wrapper,
   Select,
-} from "@/components/VIews/Login/styles";
+} from "@/components/View_temp/Login/styles";
 import Cookies from "js-cookie";
 
 const Signup = () => {

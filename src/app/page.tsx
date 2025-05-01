@@ -13,7 +13,7 @@ import {
   UserName,
   UserRole,
 } from "@/styles/Dashboard";
-import TaskList from "@/components/VIews/TaskList/TaskList";
+import TaskList from "@/components/View_temp/TaskList/TaskList";
 import { logout } from "@/store/authSlice";
 import { FiLogOut } from "react-icons/fi";
 import Cookies from "js-cookie";
