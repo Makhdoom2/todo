@@ -52,9 +52,9 @@ export const FilterContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-export const FilterButton = styled.button<{ active?: boolean }>`
-  background-color: ${({ active }) => (active ? "#6366f1" : "#f3f4f6")};
-  color: ${({ active }) => (active ? "white" : "#374151")};
+export const FilterButton = styled.button<{ $active?: boolean }>`
+  background-color: ${({ $active }) => ($active ? "#4f46e5" : "#e0e0e0")};
+  color: ${({ $active }) => ($active ? "#ffffff" : "#333333")};
   font-size: 14px;
   padding: 8px 14px;
   border: none;
@@ -63,7 +63,7 @@ export const FilterButton = styled.button<{ active?: boolean }>`
   transition: background-color 0.2s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: ${({ active }) => (active ? "#4f46e5" : "#e5e7eb")};
+    background-color: ${({ $active }) => ($active ? "#4338ca" : "#d5d5d5")};
     transform: scale(1.05);
   }
 `;

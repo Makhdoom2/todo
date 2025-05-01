@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { createTask } from "@/store/tasksSlice";
-import { Task } from "@/types/task";
+import { AssignedTo, Task } from "@/types/task";
 import {
   Form,
   FormGroup,
@@ -19,7 +19,7 @@ import {
 import { BackArrow } from "@/styles/TaskDetail";
 import { FiArrowLeft } from "react-icons/fi";
 import Cookies from "js-cookie";
-import { users } from "@/app/api/signup/route";
+import useUsers from "@/app/tasks/[id]/use-users";
 
 const TaskForm = () => {
   const dispatch = useDispatch();
@@ -27,6 +27,7 @@ const TaskForm = () => {
 
   const { register, handleSubmit, setValue } = useForm();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { data: users } = useUsers();
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -50,7 +51,7 @@ const TaskForm = () => {
         priority: data.priority,
         assignedTo: {
           id: selectedUser.id,
-          name: selectedUser.username,
+          name: selectedUser.name,
         },
         dueDate: data.dueDate,
         createdAt: new Date().toISOString(),
@@ -126,7 +127,7 @@ const TaskForm = () => {
             <option value="">Select User</option>
             {users.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.username}
+                {user.name}
               </option>
             ))}
           </Select>

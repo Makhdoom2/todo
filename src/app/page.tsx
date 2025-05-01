@@ -1,3 +1,4 @@
+"use client";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "@/store";
 import { useRouter } from "next/navigation";
@@ -15,7 +16,6 @@ import {
 import TaskList from "@/components/Views/TaskList/TaskList";
 import { logout } from "@/store/authSlice";
 import { FiLogOut } from "react-icons/fi";
-
 import Cookies from "js-cookie";
 import { resetTasks } from "@/store/tasksSlice";
 

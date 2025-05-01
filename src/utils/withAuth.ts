@@ -1,36 +1,42 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-export interface AuthenticatedNextApiRequest extends NextApiRequest {
-  user: { id: string; username: string; role: "Admin" | "User" };
+export interface AuthenticatedUser {
+  id: string;
+  username: string;
+  role: "Admin" | "User";
 }
 
-const withAuth = (handler: Function) => {
-  return async (req: AuthenticatedNextApiRequest, res: NextApiResponse) => {
-    const token = req.headers.authorization?.split(" ")[1];
+export const withAuth = (
+  handler: (req: NextRequest, user: AuthenticatedUser) => Promise<NextResponse>
+) => {
+  return async (req: NextRequest) => {
+    const authHeader = req.headers.get("authorization");
+    const token = authHeader?.split(" ")[1];
 
     if (!token) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: No token provided" });
+      return NextResponse.json(
+        { message: "Unauthorized: No token provided" },
+        { status: 401 }
+      );
     }
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
 
-      (req as AuthenticatedNextApiRequest).user = {
+      const user: AuthenticatedUser = {
         username: decoded.username,
         role: decoded.role,
         id: decoded.id,
       };
 
-      //   console.log("END POINT AUTH TESTING", decoded);
-
-      return handler(req as AuthenticatedNextApiRequest, res);
+      // Pass user to handler
+      return handler(req, user);
     } catch (error) {
-      return res.status(401).json({ message: "Unauthorized: Invalid token" });
+      return NextResponse.json(
+        { message: "Unauthorized: Invalid token" },
+        { status: 401 }
+      );
     }
   };
 };
-
-export default withAuth;

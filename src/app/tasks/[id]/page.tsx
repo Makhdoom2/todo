@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { updateTask } from "@/store/tasksSlice";
@@ -17,15 +17,18 @@ import {
   Title,
   BackArrow,
 } from "@/styles/TaskDetail";
-import { Task } from "@/types/task";
+import { AssignedTo, Task } from "@/types/task";
 import { FiArrowLeft } from "react-icons/fi";
-import { users } from "../../api/signup/route";
 import Cookies from "js-cookie";
+import { User } from "@/types/auth";
+import useUsers from "./use-users";
 
 const TaskDetails = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams?.get("id");
+
+  const params = useParams();
+  const id = params.id;
+  console.log("Task ID from URL: ", id);
 
   const token = Cookies.get("token");
   const [task, setTask] = useState<Task | null>(null);
@@ -35,6 +38,7 @@ const TaskDetails = () => {
   const [originalTask, setOriginalTask] = useState<Task | null>(null);
   const dispatch = useDispatch();
   const allTasks = useSelector((state: RootState) => state?.tasks?.tasks);
+  const { data: users } = useUsers();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -45,13 +49,13 @@ const TaskDetails = () => {
 
     if (name === "assignedTo") {
       //as now demo purpose I have to save id and name in assign to.
-      const selectedUser = users.find((user) => user.id === value);
+      const selectedUser = users?.find((user: AssignedTo) => user.id === value);
       setTask((prev) =>
         prev
           ? {
               ...prev,
               [name]: selectedUser
-                ? { id: selectedUser.id, name: selectedUser.username }
+                ? { id: selectedUser.id, name: selectedUser.name }
                 : undefined,
             }
           : null
@@ -68,6 +72,8 @@ const TaskDetails = () => {
 
     try {
       // const token = Cookies.get("token");
+
+      console.log("SUBMIT ID:", task.id, "id:", id);
       const res = await fetch(`/api/tasks/${id}`, {
         method: "PUT",
         headers: {
@@ -96,6 +102,7 @@ const TaskDetails = () => {
   };
 
   useEffect(() => {
+    // console.log("TESTING:", id);
     if (!id) return;
 
     const existingTask = allTasks.find((t) => t.id === id);
@@ -125,12 +132,14 @@ const TaskDetails = () => {
 
   useEffect(() => {
     if (task && originalTask) {
-      setIsChanged(
+      const hasChanged =
         task.title !== originalTask.title ||
-          task.description !== originalTask.description ||
-          task.status !== originalTask.status ||
-          task.priority !== originalTask.priority
-      );
+        task.description !== originalTask.description ||
+        task.status !== originalTask.status ||
+        task.priority !== originalTask.priority ||
+        task.assignedTo?.id !== originalTask.assignedTo?.id;
+
+      setIsChanged(hasChanged);
     }
   }, [task, originalTask]);
 
@@ -139,7 +148,7 @@ const TaskDetails = () => {
 
   return (
     <FormWrapper>
-      <BackArrow onClick={() => router.back()}>
+      <BackArrow onClick={() => router.push("/")}>
         <FiArrowLeft size={24} />
       </BackArrow>
       <Title>Task</Title>
@@ -180,7 +189,7 @@ const TaskDetails = () => {
             value={task.priority || ""}
             onChange={handleChange}
           >
-            <option value="">Select</option>
+            {/* <option value="">Select</option> */}
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
@@ -194,10 +203,10 @@ const TaskDetails = () => {
             value={task.assignedTo?.id || ""}
             onChange={handleChange}
           >
-            <option value="">Select User</option>
-            {users.map((user) => (
+            {/* <option value="">Select User</option> */}
+            {users.map((user: AssignedTo) => (
               <option key={user.id} value={user.id}>
-                {user.username}
+                {user.name}
               </option>
             ))}
           </Select>

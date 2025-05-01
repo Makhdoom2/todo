@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
@@ -10,11 +11,13 @@ import TaskCard from "../../TaskCard/TaskCard";
 
 const TaskList = () => {
   const [filter, setFilter] = useState<TaskStatus | "ALL">("ALL");
+  //in case of endpoint didnt send any data to avoid infinit loop endpoint call
+  const [hasFetched, setHasFetched] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const tasks = useSelector((state: RootState) => state.tasks.tasks);
+  const tasks = useSelector((state: RootState) => state?.tasks?.tasks);
 
   const filteredTasks =
     filter.toLowerCase() === "all"
@@ -46,14 +49,16 @@ const TaskList = () => {
 
   const handleEdit = (taskId: string) => {
     router.push(`/tasks/${taskId}`);
+    // router.push(`/tasks?id=${taskId}`);
   };
 
   useEffect(() => {
     ////intially update the store by endpoint
-    if (tasks.length === 0) {
+    if (tasks.length === 0 && !hasFetched) {
       dispatch(fetchTasks());
+      setHasFetched(true);
     }
-  }, [dispatch, tasks.length]);
+  }, [dispatch, tasks]);
 
   return (
     <div>
@@ -61,7 +66,7 @@ const TaskList = () => {
         {["ALL", "TODO", "IN-PROGRESS", "DONE"].map((status) => (
           <FilterButton
             key={status}
-            active={filter === status}
+            $active={filter === status}
             onClick={() => setFilter(status as TaskStatus | "ALL")}
           >
             {status}

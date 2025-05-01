@@ -1,37 +1,40 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { users } from "./signup";
+import { getUsers } from "@/utils/users";
+import { User } from "@/types/auth";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    const { username, password }: { username: string; password: string } =
-      req.body;
+export async function POST(req: NextRequest) {
+  const { username, password }: { username: string; password: string } =
+    await req.json();
 
-    const user = users.find(
-      (user) => user.username.toLowerCase() === username.toLowerCase()
+  const users = getUsers();
+
+  const user = users.find(
+    (user: User) => user.username.toLowerCase() === username.toLowerCase()
+  );
+
+  if (!user) {
+    return NextResponse.json(
+      { message: "invalid credentials" },
+      { status: 401 }
     );
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    if (user.password !== password) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    // const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    const token = jwt.sign(
-      { username: user.username, role: user.role, id: user.id },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
-
-    return res.status(200).json({ token, user });
-  } else {
-    return res.status(405).json({ message: "Method Not Allowed" });
   }
+
+  if (user.password !== password) {
+    return NextResponse.json(
+      { message: "invalid credentials" },
+      { status: 401 }
+    );
+  }
+
+  const token = jwt.sign(
+    { username: user.username, role: user.role, id: user.id },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1h" }
+  );
+
+  //   console.log("DATA:",token)
+  // return;
+
+  return NextResponse.json({ token, user });
 }

@@ -1,25 +1,34 @@
+import { NextRequest, NextResponse } from "next/server";
 import { Task } from "@/types/task";
-import { NextApiResponse } from "next";
-import { tasks } from "./[id]/route";
-import withAuth, { AuthenticatedNextApiRequest } from "@/utils/withAuth";
+import { AuthenticatedUser, withAuth } from "@/utils/withAuth";
+import { getTasks, saveTasks } from "@/utils/tasks";
 
-function handler(req: AuthenticatedNextApiRequest, res: NextApiResponse) {
-  const user = req?.user;
+export const GET = withAuth(
+  async (req: NextRequest, user: AuthenticatedUser) => {
+    // console.log("TESTING ENDPOINT 2", user);
+    const tasks = getTasks();
 
-  // console.log("TESTING ENDPOINT 2", req);
-  if (req.method === "GET") {
     if (user?.role === "Admin") {
-      // if admin send all tasks
-      return res.status(200).json(tasks);
+      // id admin gets all tasks
+      return NextResponse.json(tasks, { status: 200 });
     }
-    ///else specific tasks of taht user.
-    const userTasks = tasks.filter((task) => task?.assignedTo?.id === user?.id);
-    return res.status(200).json(userTasks);
-  }
 
-  if (req.method === "POST") {
-    const { title, description, status, assignedTo, dueDate, priority }: Task =
-      req.body;
+    // else filter tasks assigned to that user
+    const userTasks = tasks.filter(
+      (task: Task) => task?.assignedTo?.id === user?.id
+    );
+    return NextResponse.json(userTasks, { status: 200 });
+  }
+);
+
+//create new task
+export const POST = withAuth(
+  async (req: NextRequest, user: AuthenticatedUser) => {
+    const body: Task = await req.json();
+
+    const { title, description, status, assignedTo, dueDate, priority } = body;
+
+    const tasks = getTasks();
     const newTask: Task = {
       id: (tasks.length + 1).toString(),
       title,
@@ -31,11 +40,11 @@ function handler(req: AuthenticatedNextApiRequest, res: NextApiResponse) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+
     tasks.push(newTask);
-    return res.status(201).json(newTask);
+
+    // updated tasks list to the JSON file
+    saveTasks(tasks);
+    return NextResponse.json(newTask, { status: 201 });
   }
-
-  res.status(405).json({ message: "Method Not Allowed" });
-}
-
-export default withAuth(handler);
+);
