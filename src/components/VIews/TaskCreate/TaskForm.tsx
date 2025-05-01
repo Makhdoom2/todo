@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { createTask } from "@/store/tasksSlice";
-import { AssignedTo, Task } from "@/types/task";
+import { Task } from "@/types/task";
 import {
   Form,
   FormGroup,
@@ -19,7 +19,7 @@ import {
 import { BackArrow } from "@/styles/TaskDetail";
 import { FiArrowLeft } from "react-icons/fi";
 import Cookies from "js-cookie";
-import { users } from "@/pages/api/signup";
+import { users } from "@/app/api/signup/route";
 
 const TaskForm = () => {
   const dispatch = useDispatch();
@@ -76,7 +76,7 @@ const TaskForm = () => {
 
       dispatch(createTask(createdTask));
 
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       console.error("Error in creating task:", err);
       alert("Failed to create task");

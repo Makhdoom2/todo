@@ -4,7 +4,7 @@ import { jwtVerify } from "jose";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
-  const publicPaths = ["/", "/signup"];
+  const publicPaths = ["/login", "/signup"];
 
   /**
    * jsonwebtoken library internally uses Node's crypto module -> which Edge Runtime doesn't support
@@ -28,7 +28,7 @@ export function middleware(req: NextRequest) {
   const isAuthenticated = !!token && verifyJwt(token);
 
   if (isPublicPath && isAuthenticated) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (isPublicPath && !isAuthenticated) {
@@ -39,9 +39,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  return NextResponse.redirect(new URL("/", req.url));
+  return NextResponse.redirect(new URL("/login", req.url));
 }
 
 export const config = {
-  matcher: ["/", "/dashboard", "/signup", "/tasks"],
+  matcher: ["/", "/login", "/signup", "/tasks"],
 };

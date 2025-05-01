@@ -1,5 +1,6 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { updateTask } from "@/store/tasksSlice";
@@ -18,12 +19,14 @@ import {
 } from "@/styles/TaskDetail";
 import { Task } from "@/types/task";
 import { FiArrowLeft } from "react-icons/fi";
-import { users } from "../api/signup";
+import { users } from "../../api/signup/route";
 import Cookies from "js-cookie";
 
 const TaskDetails = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const searchParams = useSearchParams();
+  const id = searchParams?.get("id");
+
   const token = Cookies.get("token");
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +86,7 @@ const TaskDetails = () => {
       dispatch(updateTask(updated));
 
       // redirect to dashboard
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       console.error(err);
       alert("Failed to update task");

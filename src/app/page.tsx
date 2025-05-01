@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "@/store";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
   Container,
   CreateButton,
@@ -12,7 +12,7 @@ import {
   UserName,
   UserRole,
 } from "@/styles/Dashboard";
-import TaskList from "@/components/VIews/TaskList/TaskList";
+import TaskList from "@/components/Views/TaskList/TaskList";
 import { logout } from "@/store/authSlice";
 import { FiLogOut } from "react-icons/fi";
 
@@ -25,14 +25,14 @@ const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   const handleCreateTask = () => {
-    router.push("/tasks/new");
+    router.push("/tasks/create");
   };
 
   const handleLogout = () => {
     Cookies.remove("token");
     dispatch(logout());
     dispatch(resetTasks());
-    router.push("/");
+    router.push("/login");
   };
 
   return (

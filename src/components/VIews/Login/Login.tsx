@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/authSlice";
 import {
@@ -14,7 +14,7 @@ import {
   SignupText,
   Title,
   Wrapper,
-} from "@/components/VIews/Login/Login";
+} from "@/components/Views/Login/styles";
 import Cookies from "js-cookie";
 
 const Login = () => {
@@ -48,7 +48,7 @@ const Login = () => {
       dispatch(setUser(data.user));
 
       // redirect to dashboard
-      router.push("/dashboard");
+      router.push("/");
     } catch (err: any) {
       if (err instanceof Error) {
         setError(err.message);

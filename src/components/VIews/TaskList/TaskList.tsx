@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { deleteTask, fetchTasks } from "@/store/tasksSlice";
 import { Task, TaskStatus } from "@/types/task";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FilterButton, FilterContainer, TaskContainer } from "./styles";
 import Cookies from "js-cookie";
 import TaskCard from "../../TaskCard/TaskCard";

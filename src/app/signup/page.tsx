@@ -1,4 +1,5 @@
-import Signup from "@/components/VIews/Signup/Signup";
+"use client";
+import Signup from "@/components/Views/Signup/Signup";
 
 const SignupPage = () => {
   return (

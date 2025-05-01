@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/authSlice";
 import {
@@ -15,7 +15,7 @@ import {
   Title,
   Wrapper,
   Select,
-} from "@/components/VIews/Login/Login";
+} from "@/components/Views/Login/styles";
 import Cookies from "js-cookie";
 
 const Signup = () => {
@@ -48,7 +48,7 @@ const Signup = () => {
       Cookies.set("token", data.token, { expires: 10000, secure: true });
       dispatch(setUser(data.user));
 
-      router.push("/dashboard");
+      router.push("/");
     } catch (err: any) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"

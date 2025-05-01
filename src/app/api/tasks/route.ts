@@ -1,6 +1,6 @@
 import { Task } from "@/types/task";
 import { NextApiResponse } from "next";
-import { tasks } from "./[id]";
+import { tasks } from "./[id]/route";
 import withAuth, { AuthenticatedNextApiRequest } from "@/utils/withAuth";
 
 function handler(req: AuthenticatedNextApiRequest, res: NextApiResponse) {
