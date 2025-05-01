@@ -14,7 +14,7 @@ import {
   SignupText,
   Title,
   Wrapper,
-} from "@/components/Views/Login/styles";
+} from "@/components/VIews/Login/styles";
 import Cookies from "js-cookie";
 
 const Login = () => {

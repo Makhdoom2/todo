@@ -1,5 +1,5 @@
 "use client";
-import Login from "@/components/Views/Login/Login";
+import Login from "@/components/VIews/Login/Login";
 
 const LoginPage = () => {
   return (
