@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import TaskForm from "@/components/View_temp/TaskCreate/TaskForm";
+import TaskForm from "@/components/View/TaskCreate/TaskForm";
 
 const NewTask = () => {
   return (

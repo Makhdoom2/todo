@@ -1,5 +1,5 @@
 "use client";
-import Signup from "@/components/View_temp/Signup/Signup";
+import Signup from "@/components/View/Signup/Signup";
 
 const SignupPage = () => {
   return (

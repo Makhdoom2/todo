@@ -1,5 +1,5 @@
 "use client";
-import Login from "@/components/View_temp/Login/Login";
+import Login from "@/components/View/Login/Login";
 
 const LoginPage = () => {
   return (

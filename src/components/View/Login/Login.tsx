@@ -14,54 +14,56 @@ import {
   SignupText,
   Title,
   Wrapper,
-  Select,
-} from "@/components/View_temp/Login/styles";
+} from "@/components/View/Login/styles";
 import Cookies from "js-cookie";
 
-const Signup = () => {
+const Login = () => {
   const [username, setUsername] = useState("");
-
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"Admin" | "User">("User");
   const [error, setError] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password, role }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Signup failed");
+        throw new Error("Invalid credentials");
       }
 
       const data = await response.json();
 
-      Cookies.set("token", data.token, { expires: 10000, secure: true });
+      // console.log("Testing DataTOKEN", data.token);
+      // return;
+      Cookies.set("token", data.token, { expiresIn: "1h", secure: true });
+
       dispatch(setUser(data.user));
 
+      // redirect to dashboard
       router.push("/");
     } catch (err: any) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
   return (
     <Wrapper>
       <Card>
-        <Title>Sign Up</Title>
+        <Title>Login</Title>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Form onSubmit={handleSignup}>
+        <Form onSubmit={handleLogin}>
           <InputGroup>
             <label htmlFor="username">Username</label>
             <Input
@@ -72,7 +74,6 @@ const Signup = () => {
               required
             />
           </InputGroup>
-
           <InputGroup>
             <label htmlFor="password">Password</label>
             <Input
@@ -83,27 +84,17 @@ const Signup = () => {
               required
             />
           </InputGroup>
-          <InputGroup>
-            <label htmlFor="role">Role</label>
-            <Select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value as "Admin" | "User")}
-              required
-            >
-              <option value="User">User</option>
-              <option value="Admin">Admin</option>
-            </Select>
-          </InputGroup>
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit">Login</Button>
         </Form>
         <SignupText>
-          Already have an account?{" "}
-          <SignupLink onClick={() => router.push("/")}>Login</SignupLink>
+          Don't have an account?{" "}
+          <SignupLink onClick={() => router.push("/signup")}>
+            Sign up
+          </SignupLink>
         </SignupText>
       </Card>
     </Wrapper>
   );
 };
 
-export default Signup;
+export default Login;
