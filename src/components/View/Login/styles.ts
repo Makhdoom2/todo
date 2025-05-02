@@ -50,7 +50,7 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   width: 100%;
   font-size: 16px;
-
+  background-color: #ffffff !important;
   &:focus {
     border-color: #4f46e5;
     outline: none;
