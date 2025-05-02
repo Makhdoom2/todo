@@ -18,6 +18,20 @@ This application allows users to manage their daily tasks efficiently. It featur
 
 ---
 
+## Test Users
+
+For quick testing, use these pre-configured accounts:
+
+| Role   | Username | Password  |
+|--------|----------|-----------|
+| Admin  | `admin`  | `admin123`|
+| User   | `ahmad`  | `user123` |
+| User   | `fatima` | `user123` |
+| User   | `bilal`  | `user123` |
+
+
+---
+
 ## Available Scripts
 
 Run the following commands in your terminal:
